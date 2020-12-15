@@ -1,1 +1,1 @@
-# spring-bookstore-service
+# spring-board-service
