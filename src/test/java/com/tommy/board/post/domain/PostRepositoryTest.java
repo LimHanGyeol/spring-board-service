@@ -3,13 +3,13 @@ package com.tommy.board.post.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PostRepositoryTest {
 
     @Autowired
@@ -19,22 +19,14 @@ class PostRepositoryTest {
     @DisplayName("Post 저장")
     void save() {
         // given
-        String postTitle = "post title";
-        String postDescription = "post description";
-        String postAuthor = "hangyeol";
-
-        postRepository.save(Post.write(postTitle, postDescription, postAuthor));
+        Post post = Post.write("title", "description", "hangyeol");
 
         // when
-        List<Post> posts = postRepository.findAll();
+        Post savedPost = postRepository.save(post);
 
         // then
-        assertThat(posts).hasSize(1);
-
-        Post post = posts.get(0);
-        assertThat(post.getTitle()).isEqualTo(postTitle);
-        assertThat(post.getDescription()).isEqualTo(postDescription);
-        assertThat(post.getAuthor()).isEqualTo(postAuthor);
+        assertThat(savedPost).isNotNull();
+        assertThat(savedPost).isEqualTo(post);
     }
 
 }
