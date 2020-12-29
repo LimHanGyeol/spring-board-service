@@ -1,5 +1,6 @@
 package com.tommy.board.post.domain;
 
+import com.tommy.board.post.dto.PostSaveRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -33,6 +34,10 @@ public class Post {
 
     public static Post write(String title, String description, String author) {
         return new Post(title, description, author);
+    }
+
+    public PostSaveRequestDto toPostDto() {
+        return PostSaveRequestDto.of(title, description, author);
     }
 
 }
