@@ -41,10 +41,11 @@ class PostServiceTest {
     void save() {
         // given
         PostSaveRequestDto saveRequestDto = PostSaveRequestDto.of(title, description, author);
-        given(postService.save(saveRequestDto)).willReturn(saveRequestDto);
+        PostResponseDto postResponseDto = new PostResponseDto(Post.write(title, description, author));
+        given(postService.save(saveRequestDto)).willReturn(postResponseDto);
 
         // when
-        PostSaveRequestDto savedPost = postService.save(saveRequestDto);
+        PostResponseDto savedPost = postService.save(saveRequestDto);
         System.out.println(savedPost);
         // then
         assertThat(savedPost.getTitle()).isEqualTo(title);

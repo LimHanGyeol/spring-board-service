@@ -20,9 +20,9 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public PostSaveRequestDto save(PostSaveRequestDto postSaveRequestDto) {
+    public PostResponseDto save(PostSaveRequestDto postSaveRequestDto) {
         return postRepository.save(postSaveRequestDto.toEntity())
-                .toPostDto();
+                .toPostResponseDto();
     }
 
     @Transactional(readOnly = true)
@@ -34,10 +34,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResponseDto findById(Long id) {
-        Post post = postRepository.findById(id)
+        return postRepository.findById(id)
+                .map(PostResponseDto::new)
                 .orElseThrow(PostNotFoundException::new);
-
-        return new PostResponseDto(post);
     }
 
     @Transactional

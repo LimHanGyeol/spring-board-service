@@ -1,5 +1,7 @@
 package com.tommy.board.post.domain;
 
+import com.tommy.board.global.BaseTimeEntity;
+import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @ToString
 @Entity
-public class Post {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +43,8 @@ public class Post {
         this.description = description;
     }
 
-    public PostSaveRequestDto toPostDto() {
-        return PostSaveRequestDto.of(title, description, author);
+    public PostResponseDto toPostResponseDto() {
+        return new PostResponseDto(this);
     }
 
 }

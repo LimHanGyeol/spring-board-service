@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +32,7 @@ class PostRepositoryTest {
     @DisplayName("Post 저장")
     void save() {
         // given
+        LocalDateTime now = LocalDateTime.of(2020, 12, 31, 0, 0, 0);
         Post post = newInstance();
 
         // when
@@ -39,6 +41,9 @@ class PostRepositoryTest {
         // then
         assertThat(savedPost).isNotNull();
         assertThat(savedPost).isEqualTo(post);
+
+        assertThat(savedPost.getCreatedDate()).isAfter(now);
+        assertThat(savedPost.getUpdatedDate()).isAfter(now);
     }
 
     @Test
