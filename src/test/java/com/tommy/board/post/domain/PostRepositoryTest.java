@@ -21,8 +21,8 @@ class PostRepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
-    @BeforeEach
-    void setUp() {
+    @AfterEach
+    void tearDown() {
         testEntityManager.clear();
     }
 
@@ -71,6 +71,25 @@ class PostRepositoryTest {
 
         // then
         assertThat(posts).hasSize(1);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Post 수정")
+    void update() {
+        // given
+        Post post = newInstance();
+        testEntityManager.persist(post);
+
+        String updateTitle = "update title";
+        String updateDescription = "update description";
+
+        // when
+        post.update(updateTitle, updateDescription);
+
+        // then
+        assertThat(post.getTitle()).isEqualTo(updateTitle);
+        assertThat(post.getDescription()).isEqualTo(updateDescription);
     }
 
     private Post newInstance() {

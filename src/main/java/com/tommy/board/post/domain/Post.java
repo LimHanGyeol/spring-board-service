@@ -36,6 +36,11 @@ public class Post {
         return new Post(title, description, author);
     }
 
+    public void update(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
     public PostSaveRequestDto toPostDto() {
         return PostSaveRequestDto.of(title, description, author);
     }

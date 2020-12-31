@@ -1,10 +1,11 @@
 package com.tommy.board.post.service;
 
-import com.tommy.board.global.exception.ExceptionMessage;
+import com.tommy.board.global.exception.PostNotFoundException;
 import com.tommy.board.post.domain.Post;
 import com.tommy.board.post.domain.PostRepository;
 import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
+import com.tommy.board.post.dto.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,17 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponseDto findById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MESSAGE_NOT_FOUND_POST));
+                .orElseThrow(PostNotFoundException::new);
 
+        return new PostResponseDto(post);
+    }
+
+    @Transactional
+    public PostResponseDto update(Long id, PostUpdateRequestDto postUpdateRequestDto) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(PostNotFoundException::new);
+
+        post.update(postUpdateRequestDto.getTitle(), postUpdateRequestDto.getDescription());
         return new PostResponseDto(post);
     }
 

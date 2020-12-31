@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tommy.board.post.domain.Post;
 import com.tommy.board.post.domain.PostRepository;
 import com.tommy.board.post.dto.PostSaveRequestDto;
+import com.tommy.board.post.dto.PostUpdateRequestDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,7 +45,6 @@ class PostControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
     private MockMvc mvc;
 
     private String title;
@@ -57,13 +57,16 @@ class PostControllerTest {
         description = "post description";
         author = "hangyeol";
 
-        postRepository.deleteAll();
-
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @AfterEach
+    void tearDown() {
+        postRepository.deleteAll();
     }
 
     @Test
@@ -80,10 +83,9 @@ class PostControllerTest {
                 .content(new ObjectMapper().writeValueAsString(postSaveRequestDto)))
                 .andExpect(status().isCreated());
 
-        // then
-        List<Post> posts = postRepository.findAll();
+        // thenList
+        List<Post > posts = postRepository.findAll();
         Post post = posts.get(0);
-
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getDescription()).isEqualTo(description);
     }
@@ -125,6 +127,32 @@ class PostControllerTest {
 
         assertThat(post.getId()).isEqualTo(1L);
         assertThat(post.getTitle()).isEqualTo("post title");
+    }
+
+    @Test
+    @DisplayName("Post 수정")
+    void postUpdate() throws Exception {
+        // given
+        Post savedPost = postRepository.save(Post.write(title, description, author));
+
+        String updateTitle = "updateTitle";
+        String updateDescription = "updateDescription";
+        PostUpdateRequestDto request = new PostUpdateRequestDto(updateTitle, updateDescription);
+
+        String url = URL_LOCALHOST + port + "/api/posts/" + savedPost.getId();
+
+        // when
+        mvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // then
+        List<Post> posts = postRepository.findAll();
+        Post post = posts.get(0);
+
+        assertThat(post.getTitle()).isEqualTo(updateTitle);
+        assertThat(post.getDescription()).isEqualTo(updateDescription);
     }
 
 }

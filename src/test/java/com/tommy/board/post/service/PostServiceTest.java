@@ -1,8 +1,10 @@
 package com.tommy.board.post.service;
 
+import com.tommy.board.global.exception.PostNotFoundException;
 import com.tommy.board.post.domain.Post;
 import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
+import com.tommy.board.post.dto.PostUpdateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +56,7 @@ class PostServiceTest {
     @DisplayName("전체 Post 조회")
     void findAll() {
         // given
-        PostResponseDto postResponseDto = newInstanceOfPostResponseDto();
+        PostResponseDto postResponseDto = newInstanceOfPostResponseDto(title, description);
         List<PostResponseDto> mockPosts = Arrays.asList(postResponseDto);
 
         given(postService.findAll()).willReturn(mockPosts);
@@ -69,7 +71,7 @@ class PostServiceTest {
     @DisplayName("특정 Id의 Post 조회")
     void findById() {
         // given
-        PostResponseDto postResponseDto = newInstanceOfPostResponseDto();
+        PostResponseDto postResponseDto = newInstanceOfPostResponseDto(title, description);
 
         given(postService.findById(1L)).willReturn(postResponseDto);
 
@@ -86,15 +88,37 @@ class PostServiceTest {
     @DisplayName("존재하지 않는 Post 조회 시 Exception 발생")
     void notFoundPost() {
         // given
-        given(postService.findById(1234L)).willThrow(new IllegalArgumentException("해당 게시물을 찾을 수 없습니다."));
+        given(postService.findById(1234L)).willThrow(new PostNotFoundException());
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(PostNotFoundException.class)
                 .isThrownBy(() -> {
                     postService.findById(1234L);
-                });
+                }).withMessage("해당 게시물을 찾을 수 없습니다.");
     }
 
-    private PostResponseDto newInstanceOfPostResponseDto() {
+    @Test
+    @DisplayName("Post 수정")
+    void update() {
+        // given
+        String updateTitle = "update title";
+        String updateDescription = "update description";
+
+        PostUpdateRequestDto updateRequestDto = new PostUpdateRequestDto(updateTitle, updateDescription);
+
+        PostResponseDto postResponseDto = newInstanceOfPostResponseDto(updateTitle, updateDescription);
+
+        given(postService.update(1L, updateRequestDto)).willReturn(postResponseDto);
+
+        // when
+        PostResponseDto updatedPost = postService.update(1L, updateRequestDto);
+
+        // then
+        assertThat(updatedPost).isNotNull();
+        assertThat(updatedPost.getTitle()).isEqualTo(updateTitle);
+        assertThat(updatedPost.getDescription()).isEqualTo(updateDescription);
+    }
+
+    private PostResponseDto newInstanceOfPostResponseDto(String title, String description) {
         Post post = Post.write(title, description, author);
         return new PostResponseDto(post);
     }
