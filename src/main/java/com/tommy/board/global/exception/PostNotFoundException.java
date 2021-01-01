@@ -1,9 +1,12 @@
 package com.tommy.board.global.exception;
 
-public class PostNotFoundException extends IllegalStateException {
+import com.tommy.board.global.exception.error.BusinessException;
+import com.tommy.board.global.exception.error.ErrorCode;
+
+public class PostNotFoundException extends BusinessException {
 
     public PostNotFoundException() {
-        super(ExceptionMessage.MESSAGE_NOT_FOUND_POST);
+        super(ExceptionMessage.MESSAGE_NOT_FOUND_POST, ErrorCode.POST_NOT_FOUND);
     }
 
 }

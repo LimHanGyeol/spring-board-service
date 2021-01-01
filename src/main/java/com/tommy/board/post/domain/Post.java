@@ -2,14 +2,14 @@ package com.tommy.board.post.domain;
 
 import com.tommy.board.global.BaseTimeEntity;
 import com.tommy.board.post.dto.PostResponseDto;
-import com.tommy.board.post.dto.PostSaveRequestDto;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 @Entity

@@ -49,4 +49,12 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(PostNotFoundException::new);
+
+        postRepository.delete(post);
+    }
+
 }

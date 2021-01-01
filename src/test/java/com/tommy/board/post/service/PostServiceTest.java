@@ -1,5 +1,6 @@
 package com.tommy.board.post.service;
 
+import com.tommy.board.global.exception.ExceptionMessage;
 import com.tommy.board.global.exception.PostNotFoundException;
 import com.tommy.board.post.domain.Post;
 import com.tommy.board.post.dto.PostListResponseDto;
@@ -96,7 +97,7 @@ class PostServiceTest {
         assertThatExceptionOfType(PostNotFoundException.class)
                 .isThrownBy(() -> {
                     postService.findById(1234L);
-                }).withMessage("해당 게시물을 찾을 수 없습니다.");
+                }).withMessage(ExceptionMessage.MESSAGE_NOT_FOUND_POST);
     }
 
     @Test

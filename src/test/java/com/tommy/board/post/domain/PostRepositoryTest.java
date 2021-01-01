@@ -83,8 +83,7 @@ class PostRepositoryTest {
     @DisplayName("Post 수정")
     void update() {
         // given
-        Post post = newInstance();
-        testEntityManager.persist(post);
+        Post post = testEntityManager.persist(newInstance());
 
         String updateTitle = "update title";
         String updateDescription = "update description";
@@ -93,11 +92,34 @@ class PostRepositoryTest {
         post.update(updateTitle, updateDescription);
 
         // then
-        assertThat(post.getTitle()).isEqualTo(updateTitle);
-        assertThat(post.getDescription()).isEqualTo(updateDescription);
+        List<Post> posts = postRepository.findAll();
+        Post savedPost = posts.get(0);
+
+        assertThat(savedPost.getTitle()).isEqualTo(updateTitle);
+        assertThat(savedPost.getDescription()).isEqualTo(updateDescription);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Post 삭제")
+    void delete() {
+        // given
+        testEntityManager.persist(newInstance());
+
+        List<Post> savedPosts = postRepository.findAll();
+        assertThat(savedPosts).hasSize(1);
+
+        // when
+        Post savedPost = savedPosts.get(0);
+        postRepository.delete(savedPost);
+
+        // then
+        List<Post> results = postRepository.findAll();
+        assertThat(results).isEmpty();
     }
 
     private Post newInstance() {
         return Post.write("title", "description", "hangyeol");
     }
+
 }

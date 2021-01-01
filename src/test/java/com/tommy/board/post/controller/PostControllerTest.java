@@ -71,7 +71,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("게시물 등록 Api 호출")
-    void postSave() throws Exception {
+    void savePost() throws Exception {
         // given
         PostSaveRequestDto postSaveRequestDto = PostSaveRequestDto.of(title, description, author);
 
@@ -84,7 +84,7 @@ class PostControllerTest {
                 .andExpect(status().isCreated());
 
         // thenList
-        List<Post > posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll();
         Post post = posts.get(0);
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getDescription()).isEqualTo(description);
@@ -92,7 +92,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("전체 Post 조회 Api 호출")
-    void postFindAll() throws Exception {
+    void findAllPosts() throws Exception {
         // given
         postRepository.save(Post.write(title, description, author));
 
@@ -110,11 +110,12 @@ class PostControllerTest {
 
     @Test
     @DisplayName("특정 Id의 Post 조회 Api 호출")
-    void postFindById() throws Exception {
+    void findByPostId() throws Exception {
         // given
-        postRepository.save(Post.write(title, description, author));
+        Post savedPost = postRepository.save(Post.write(title, description, author));
 
-        String url = URL_LOCALHOST + port + "/api/posts/1";
+        long savedPostId = savedPost.getId();
+        String url = URL_LOCALHOST + port + "/api/posts/" + savedPostId;
 
         // when
         mvc.perform(get(url)
@@ -122,16 +123,16 @@ class PostControllerTest {
                 .andExpect(status().isOk());
 
         // then
-        Post post = postRepository.findById(1L)
+        Post post = postRepository.findById(savedPostId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        assertThat(post.getId()).isEqualTo(1L);
+        assertThat(post.getId()).isEqualTo(savedPostId);
         assertThat(post.getTitle()).isEqualTo("post title");
     }
 
     @Test
-    @DisplayName("Post 수정")
-    void postUpdate() throws Exception {
+    @DisplayName("특정 Id의 Post 수정 Api 호출")
+    void updatePost() throws Exception {
         // given
         Post savedPost = postRepository.save(Post.write(title, description, author));
 
@@ -153,6 +154,40 @@ class PostControllerTest {
 
         assertThat(post.getTitle()).isEqualTo(updateTitle);
         assertThat(post.getDescription()).isEqualTo(updateDescription);
+    }
+
+    @Test
+    @DisplayName("특정 Id의 Post 삭제 Api 호출")
+    void deletePost() throws Exception {
+        // given
+        Post savedPost = postRepository.save(Post.write(title, description, author));
+
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(1);
+
+        String url = URL_LOCALHOST + port + "/api/posts/" + savedPost.getId();
+
+        // when
+        mvc.perform(delete(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(new ObjectMapper().writeValueAsString(savedPost.getId())))
+                .andExpect(status().isOk());
+
+        // then
+        List<Post> savedPosts = postRepository.findAll();
+        assertThat(savedPosts).isEmpty();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 Id의 Post 삭제 Api 호출 시 Exception 발생")
+    void impossibleDeletePost() throws Exception {
+        // given
+        String url = URL_LOCALHOST + port + "/api/posts/3";
+
+        // when then
+        mvc.perform(delete(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound());
     }
 
 }
