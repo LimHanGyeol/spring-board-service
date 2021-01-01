@@ -1,5 +1,6 @@
 package com.tommy.board.post.controller;
 
+import com.tommy.board.post.dto.PostListResponseDto;
 import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
 import com.tommy.board.post.dto.PostUpdateRequestDto;
@@ -25,7 +26,7 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<PostResponseDto>> findAll() {
+    public ResponseEntity<List<PostListResponseDto>> findAll() {
         return ResponseEntity.ok().body(postService.findAll());
     }
 

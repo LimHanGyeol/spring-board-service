@@ -3,6 +3,7 @@ package com.tommy.board.post.service;
 import com.tommy.board.global.exception.PostNotFoundException;
 import com.tommy.board.post.domain.Post;
 import com.tommy.board.post.domain.PostRepository;
+import com.tommy.board.post.dto.PostListResponseDto;
 import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
 import com.tommy.board.post.dto.PostUpdateRequestDto;
@@ -26,9 +27,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findAll() {
+    public List<PostListResponseDto> findAll() {
         return postRepository.findAll().stream()
-                .map(PostResponseDto::new)
+                .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
 

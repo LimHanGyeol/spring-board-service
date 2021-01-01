@@ -2,6 +2,7 @@ package com.tommy.board.post.service;
 
 import com.tommy.board.global.exception.PostNotFoundException;
 import com.tommy.board.post.domain.Post;
+import com.tommy.board.post.dto.PostListResponseDto;
 import com.tommy.board.post.dto.PostResponseDto;
 import com.tommy.board.post.dto.PostSaveRequestDto;
 import com.tommy.board.post.dto.PostUpdateRequestDto;
@@ -57,13 +58,14 @@ class PostServiceTest {
     @DisplayName("전체 Post 조회")
     void findAll() {
         // given
-        PostResponseDto postResponseDto = newInstanceOfPostResponseDto(title, description);
-        List<PostResponseDto> mockPosts = Arrays.asList(postResponseDto);
+        Post post = Post.write(title, description, author);
+        PostListResponseDto postListResponseDto = new PostListResponseDto(post);
+        List<PostListResponseDto> mockPosts = Arrays.asList(postListResponseDto);
 
         given(postService.findAll()).willReturn(mockPosts);
 
         // when
-        List<PostResponseDto> posts = postService.findAll();
+        List<PostListResponseDto> posts = postService.findAll();
 
         assertThat(posts).hasSize(1);
     }
