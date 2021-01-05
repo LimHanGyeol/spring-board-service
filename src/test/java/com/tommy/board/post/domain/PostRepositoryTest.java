@@ -51,16 +51,16 @@ class PostRepositoryTest {
     @DisplayName("특정 Id의 Post 조회")
     void findById() {
         // given
-        testEntityManager.persist(newInstance());
+        Post savedPost = testEntityManager.persist(newInstance());
 
         // when
-        Post savedPost = postRepository.findById(2L)
+        Post post = postRepository.findById(savedPost.getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         // then
-        assertThat(savedPost).isNotNull();
-        assertThat(savedPost.getId()).isEqualTo(2L);
-        assertThat(savedPost.getTitle()).isEqualTo("title");
+        assertThat(post).isNotNull();
+        assertThat(post.getId()).isEqualTo(savedPost.getId());
+        assertThat(post.getTitle()).isEqualTo("title");
     }
 
     @Test
