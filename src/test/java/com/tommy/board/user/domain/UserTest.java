@@ -31,14 +31,14 @@ class UserTest {
 
         // then
         assertThat(user.getName()).isEqualTo(updateName);
-        assertThat(user.getPicture()).isEqualTo(updateProfileImage);
+        assertThat(user.getProfileImage()).isEqualTo(updateProfileImage);
     }
 
     private User newInstance() {
         return User.builder()
                 .name("tommy")
                 .email("dlagksruf19@naver.com")
-                .picture("profile_image")
+                .profileImage("profile_image")
                 .role(Role.USER)
                 .build();
     }

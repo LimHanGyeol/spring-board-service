@@ -27,6 +27,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.h2database:h2'
 
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 }
 
 test {
@@ -43,7 +45,9 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ["**/com/tommy/board/BoardApplication**"])
+                    exclude: ["**/com/tommy/board/BoardApplication**",
+                              "**/com/tommy/board/global/config/auth/**",
+                              "**/com/tommy/board/user/service/CustomOAuth2**"])
         }))
     }
 
@@ -59,10 +63,12 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.90
+                minimum = 0.70
             }
 
-            excludes = ["com.tommy.board.BoardApplication"]
+            excludes = ["com.tommy.board.BoardApplication",
+                        "com.tommy.board.global.config.auth.SecurityConfig",
+                        "com.tommy.board.user.service.CustomOAuth2UserService"]
         }
     }
 }

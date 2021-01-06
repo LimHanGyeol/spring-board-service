@@ -20,27 +20,28 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column
-    private String picture;
+    private String profileImage;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @Builder
-    public User(String name, String email, String picture, Role role) {
+    private User(String name, String email, String profileImage, Role role) {
         this.name = name;
         this.email = email;
-        this.picture = picture;
+        this.profileImage = profileImage;
         this.role = role;
     }
 
-    public void update(String name, String picture) {
+    public User update(String name, String profileImage) {
         this.name = name;
-        this.picture = picture;
+        this.profileImage = profileImage;
+        return this;
     }
 
     public String getRoleKey() {

@@ -90,7 +90,7 @@ class UserRepositoryTest {
         User savedUser = users.get(0);
 
         assertThat(savedUser.getName()).isEqualTo(updateName);
-        assertThat(savedUser.getPicture()).isEqualTo(updateProfileImage);
+        assertThat(savedUser.getProfileImage()).isEqualTo(updateProfileImage);
     }
 
     @Test
@@ -116,7 +116,7 @@ class UserRepositoryTest {
         return User.builder()
                 .name("tommy")
                 .email("dlagksruf19@naver.com")
-                .picture("profile_image")
+                .profileImage("profile_image")
                 .role(Role.USER)
                 .build();
     }
